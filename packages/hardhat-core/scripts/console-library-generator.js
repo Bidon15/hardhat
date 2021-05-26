@@ -97,6 +97,46 @@ for (let i = 0; i < singleTypes.length; i++) {
     functionSuffix;
 }
 
+const tmpTypes = singleTypes
+  .splice(singleTypes.indexOf("uint"))
+  .splice(singleTypes.indexOf("string memory"))
+  .splice(singleTypes.indexOf("bool"))
+  .splice(singleTypes.indexOf("address"))
+  .splice(singleTypes.indexOf("bytes memory"));
+
+logger += tmpTypes + " \n";
+
+for (let i = 0; i < singleTypes.length; i++) {
+  const nameSuffix =
+    singleTypes[i].charAt(0).toUpperCase() + singleTypes[i].slice(1);
+
+  const sigInt = eutil.bufferToInt(
+    eutil.keccak256("log" + "(" + singleTypes[i] + ")").slice(0, 4)
+  );
+  logger +=
+    "  " +
+    sigInt +
+    ": [" +
+    singleTypes[i].charAt(0).toUpperCase() +
+    singleTypes[i].slice(1) +
+    "Ty],\n";
+
+  consoleSolFIle +=
+    functionPrefix +
+    " log" +
+    nameSuffix +
+    "(" +
+    "string memory p0 " +
+    singleTypes[i] +
+    " p1" +
+    functionBody +
+    "string, " +
+    singleTypes[i] +
+    ')", ' +
+    "p0, p1" +
+    functionSuffix;
+}
+
 const maxNumberOfParameters = 4;
 const numberOfPermutations = {};
 const dividers = {};
